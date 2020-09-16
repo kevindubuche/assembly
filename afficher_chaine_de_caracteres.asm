@@ -12,23 +12,38 @@
 
 ;__________________________________________________________
 
-.MODEL SMALL
- .STACK 100H
+    
 
- .DATA
-    STRING_1  DB  'Bonjour$'
+    code segment use16
+    
+    assume cs:code, ds:data, ss:pile
+    
+    
+    debut:
+    
+    mov ax, data ;chargger ds avec l'adresse du segment data      
+    mov ds, ax
+    
+    mov ah, 09h
+    mov dx, offset message
+    int 21h
+    
+    mov ah, 4ch   ;$C = numeroo de fonction de l'int. 21h qui sert a quitter
+    int 21h
+    
+    code ends
 
- .CODE
-   MAIN PROC
-     MOV AX, @DATA                ; initialize DS
-     MOV DS, AX
-
-     LEA DX, STRING_1             ; load & display the STRING_1  
-     MOV AH, 9            
-     INT 21H
-
-
-     MOV AH, 4CH                  ; return control to DOS
-     INT 21H
-   MAIN ENDP
- END MAIN
+    data segment use16
+        
+    message db "Sa kap fet ? ",'$'
+        
+    data ends 
+    
+    pile segment stack
+        
+    remplissage bd 256 DUP(?)
+    pile ends
+    
+    
+    end debut
+    
