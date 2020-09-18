@@ -28,7 +28,7 @@
     mov dx, offset message
     int 21h
     
-    mov ah, 4ch   ;$C = numeroo de fonction de l'int. 21h qui sert a quitter
+    mov ah, 4ch   ;4C = numeroo de fonction de l'int. 21h qui sert a quitter
     int 21h
     
     code ends

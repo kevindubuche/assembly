@@ -2,7 +2,7 @@
 .MODEL SMALL 
 .STACK 100H 
 .DATA 
-d1 dw 8 
+d1 dw 65535
 .CODE 
 MAIN PROC FAR 
 	MOV AX, @DATA 
@@ -42,7 +42,7 @@ PRINT PROC
 	dec cx ;decrease the count  
 	jmp print1 
 
-  exit : ret 
+  exit: ret 
 
 PRINT ENDP 
 END MAIN 
