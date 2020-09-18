@@ -1,45 +1,80 @@
-;8086 program to convert a 16 bit decimal number to binary 
+;EXERCICE 3
+;----------------------------------------
+;Program  : Decimal -> binaire
+;FileName : convertir_decimal_en_binaire.asm
+;I/P 	  : 8
+;O/P 	  : 1000 
+;By       : Kevin DUBUCHE 
+;---------------------------------------- 
+
+;Ecrire un programme assembleur en 8086 qui convertit
+;un nombre decimal de 16 bit en nombre binaire        
+
+;__________________________________________________________
+
+;;;;;;8086 programme pour convertir un decimal de 16 bit en binaire
 .MODEL SMALL 
 .STACK 100H 
 .DATA 
-d1 dw 65535
+;;;;;;;;;;;; on stock la valeur a convertir dans d1
+d1 dw 8
 .CODE 
+
 MAIN PROC FAR 
+    ;;;;;;chargement du segment de code
 	MOV AX, @DATA 
 	MOV DS, AX 
-	mov ax, d1 ;load the value stored in variable d1 
-	CALL PRINT ;convert the value to binary print the value 
-	MOV AH, 4CH ;interrupt to exit
+	;;;;;; fin chargement du segment de code 
+
+	;;;;;;chargement de la valeur en decimal a convertir
+	mov ax, d1 
+	;;;;;;appel de la procedure qui fait la converion
+	CALL PRINT 
+	;;;;;;;;;;;;;fin du programme
+	MOV AH, 4CH 
 	INT 21H 
 MAIN ENDP
 
 
+;;;;;;;;definition de ma procedure
 PRINT PROC  
-  mov cx, 0 ;initilize count
+  ;;;;;;;;;CX taille de la pile qui va recevoir les nombres
+  mov cx, 0 
+  ;;;;;;;;dx recoit le reste le la division
   mov dx, 0 
   
-  label1:  ; if ax is zero 
+  ;;;;;;;;on compare AX a 0
+  label1:  
 	cmp ax, 0 
 	je print1 
 
-  mov bx, 2 ;initilize bx to 2 
-  div bx ;devide it by 2 to convert it to binary 
-  push dx ;push it in the stack 
-  inc cx ;increment the count 
-  xor dx,dx ;set dx to 0 
+  ;;;;;on met 2  dans bs, car on fera des divisions successives par 2
+  mov bx, 2 
+  ;;;;;;;;;;;on divise par 16 pour la conversion en hexadecimal
+  ;;;;;;;;;;;AX est divise par BX, le quotient est dans ax (plus precisement AL) et le reste dans dx
+	
+  div bx 
+  push dx 
+  ;;;;;;;;on incremente cx car pour chaque division on push le quotient dans la pile
+  inc cx 
+  ;;;;;;;;;;on met dx, qui recoit le reste de la division a 0 (xor est plus efficace que mov dx,0)
+  xor dx,dx 
   jmp label1 
 			
   print1: 
-  	cmp cx, 0 ;check if count is greater than zero 
+    ;;;;;;;;verifier si CX est > 0 por savoir s'il reste un element a convertir (en lettre) dans la pile
+  	cmp cx, 0 
 	je exit
  
-	pop dx ;pop the top of stack
-	add dx, 48 ;add 48 so that it represents the ASCII value of digits 
-
-	mov ah, 02h ;interrupt to print a character 
+	pop dx 
+	;;;;;;;on ajoute 48 pour avooir l'equivalent des digit en  ASCII
+	add dx, 48 
+	;;;;;on affiche le caractere grace a l'interruption suivante
+	mov ah, 02h 
 	int 21h 
 
-	dec cx ;decrease the count  
+	;;;;on decremente le compteur
+	dec cx 
 	jmp print1 
 
   exit: ret 
